@@ -2545,8 +2545,8 @@ footer{
               <input class="admin-input" id="postExcerpt" placeholder="Una frase..."/>
             </div>
             <div class="admin-field">
-              <label class="admin-label">Emoji portada</label>
-              <input class="admin-input" id="postEmoji" placeholder="🌙" maxlength="4" style="font-size:20px;text-align:center;"/>
+              <label class="admin-label">Emoji o URL de imagen/GIF portada</label>
+              <input class="admin-input" id="postEmoji" placeholder="🌙 o https://i.imgur.com/tu-imagen.gif" style="font-size:14px;"/>
             </div>
           </div>
           <div class="admin-field" style="margin-bottom:10px;">
@@ -3425,7 +3425,11 @@ function injectPostCard(post){
   const grid=document.querySelector('.posts-grid');if(!grid)return;
   const card=document.createElement('div');card.className='post-card';
   const date=new Date(post.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}).toUpperCase();
-  card.innerHTML=`<div class="post-img ${imgClasses[Math.floor(Math.random()*3)]}">${post.emoji}</div><span class="post-tag ${tagClasses[post.category]||'tag-REFLEXIONES'}">${post.category}</span><span class="post-date">${date}</span><div class="post-title">${post.title}</div><div class="post-excerpt">${post.excerpt||post.content?.substring(0,80)||''}</div><a href="#" class="read-more" onclick="event.preventDefault();openPostByIndex(1)">LEER MÁS →</a>`;
+  const isUrl = post.emoji && post.emoji.startsWith('http');
+  const imgContent = isUrl
+  ? `<img src="${post.emoji}" style="width:100%;height:100%;object-fit:cover;display:block;"/>`
+  : (post.emoji || '🌙');
+  card.innerHTML=`<div class="post-img ${imgClasses[Math.floor(Math.random()*3)]}" style="${isUrl?'padding:0;overflow:hidden;':''}">${imgContent}</div><span class="post-tag ${tagClasses[post.category]||'tag-REFLEXIONES'}">${post.category}</span><span class="post-date">${date}</span><div class="post-title">${post.title}</div><div class="post-excerpt">${post.excerpt||post.content?.substring(0,80)||''}</div><a href="#" class="read-more" onclick="event.preventDefault();openPostByIndex(1)">LEER MÁS →</a>`;
   grid.insertBefore(card,grid.firstChild);if(grid.children.length>3)grid.removeChild(grid.lastChild);
 }
 (function loadSavedPosts(){JSON.parse(localStorage.getItem('lunarPosts')||'[]').slice(0,3).reverse().forEach(injectPostCard);})();
