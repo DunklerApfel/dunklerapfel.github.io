@@ -3170,7 +3170,6 @@ function initAdmin(){
   if(params.get('admin')==='1'||localStorage.getItem('lunarAdminEnabled')){
     const fab=document.getElementById('adminFab');
     if(fab){fab.style.display='flex';}
-    localStorage.setItem('lunarAdminEnabled','1');
   }
   loadAllConfig();
   renderPostsList();
