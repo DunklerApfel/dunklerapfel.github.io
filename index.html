@@ -2890,39 +2890,23 @@ async function initVisitorCounter(){
   const graph = document.getElementById('visitorGraph');
   if(!el) return;
 
-  // IMPORTANTE: cambia 'dunkler-apfel-blog' por un nombre único tuyo
-  // Ejemplo: 'mi-nombre-blog-2026' — debe ser único en todo CountAPI
-  const NAMESPACE = 'dunkler-apfel';
-  const KEY = 'visitas-principales';
-
   try{
-    // Registrar esta visita y obtener el total
-    const res = await fetch(`https://api.countapi.xyz/hit/${NAMESPACE}/${KEY}`);
+    // hits.sh — contador gratuito, sin registro
+    const res = await fetch('https://hits.sh/dunklerapfel.github.io.json');
     const data = await res.json();
-    const total = data.value || 0;
+    const total = data.count || 0;
 
-    // Mostrar el número animado estilo pixel
     const formatted = String(total).padStart(6,'0').split('').join(' ');
     el.textContent = formatted;
 
-    // Animar las barras del gráfico proporcionalmente
     if(graph){
       const bars = graph.querySelectorAll('.vg-bar');
-      const maxBar = Math.ceil(total / bars.length);
-      // Simular historial con variación aleatoria basada en el total
-      bars.forEach((bar, i) => {
-        const pct = Math.min(100, Math.max(10, 
-          Math.round((total / 8) * (0.4 + Math.random() * 0.6) / maxBar * 100)
-        ));
-        bar.style.height = pct + '%';
-      });
-      // La última barra siempre al 100% (la más reciente)
-      bars[bars.length-1].style.height = '100%';
+      const heights = [20,35,45,30,55,70,85,100];
+      bars.forEach((bar,i) => bar.style.height = heights[i]+'%');
     }
   } catch(e){
-    // Si falla la API (sin internet, etc), mostrar un fallback bonito
-    el.textContent = '· · · · · ·';
-    console.warn('CountAPI no disponible:', e);
+    el.textContent = '0 0 0 0 0 1';
+    console.warn('Counter error:', e);
   }
 }
 initVisitorCounter();
