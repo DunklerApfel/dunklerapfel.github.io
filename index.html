@@ -2899,32 +2899,21 @@ async function initVisitorCounter(){
   }
 
   try{
-    // 1. Leer el conteo actual
     const res = await fetch(
-      `${cfg.sbUrl}/rest/v1/visitas?pagina=eq.home&select=id,count`,
-      { headers: { 'apikey': cfg.sbKey, 'Authorization': 'Bearer ' + cfg.sbKey }}
+      `${cfg.sbUrl}/rest/v1/rpc/incrementar_visitas`,
+      {
+        method: 'POST',
+        headers: {
+          'apikey': cfg.sbKey,
+          'Authorization': 'Bearer ' + cfg.sbKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({})
+      }
     );
-    const data = await res.json();
-    if(!data.length) return;
-
-    const { id, count } = data[0];
-    const newCount = count + 1;
-
-    // 2. Sumar 1
-    await fetch(`${cfg.sbUrl}/rest/v1/visitas?id=eq.${id}`, {
-      method: 'PATCH',
-      headers: {
-        'apikey': cfg.sbKey,
-        'Authorization': 'Bearer ' + cfg.sbKey,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ count: newCount })
-    });
-
-    // 3. Mostrar el número
+    const newCount = await res.json();
     el.textContent = String(newCount).padStart(6,'0').split('').join(' ');
 
-    // 4. Animar barras
     if(graph){
       const bars = graph.querySelectorAll('.vg-bar');
       const heights = [20,35,45,30,55,70,85,100];
@@ -2937,7 +2926,7 @@ async function initVisitorCounter(){
   }
 }
 initVisitorCounter();
-
+  
 /* ── Theme toggle ── */
 let dark=true;
 document.getElementById('themeBtn').addEventListener('click',()=>{
