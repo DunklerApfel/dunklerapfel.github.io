@@ -2887,44 +2887,56 @@ openModal = function(id){
 };
 
 /* ── CONTADOR DE VISITAS REAL ── */
-// En vez del PATCH directo, llamar la función segura
-const res = await fetch(
-  `${cfg.sbUrl}/rest/v1/rpc/incrementar_visitas`,
-  {
-    method: 'POST',
-    headers: {
-      'apikey': cfg.sbKey,
-      'Authorization': 'Bearer ' + cfg.sbKey,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({})
-  }
-);
-const newCount = await res.json();
-el.textContent = String(newCount).padStart(6,'0').split('').join(' ');
+async function initVisitorCounter(){
+  const el = document.getElementById('visitorCount');
+  const graph = document.getElementById('visitorGraph');
+  if(!el) return;
 
-/* ── Subscribe ── */
-function subscribe(){
-  const inp = document.querySelector('.newsletter-input');
-  if(!inp.value.includes('@')){
-    inp.style.borderColor='var(--pink)'; return;
+  const cfg = JSON.parse(localStorage.getItem('lunarConfig')||'{}');
+  if(!cfg.sbUrl || !cfg.sbKey){
+    el.textContent = '· · · · · ·';
+    return;
   }
-  // Abre Substack con el email prellenado
-  window.open(
-    'https://dunklerapfel.substack.com/subscribe?email=' + encodeURIComponent(inp.value),
-    '_blank'
-  );
-  inp.value = '';
-  const btn = document.querySelector('.newsletter-btn');
-  btn.textContent = '✓ ¡GRACIAS!';
-  btn.style.background = 'var(--green)';
-  btn.style.color = 'var(--bg)';
-  setTimeout(()=>{ 
-    btn.textContent = 'SUSCRIBIRSE'; 
-    btn.style.background = ''; 
-    btn.style.color = ''; 
-  }, 2500);
+
+  try{
+    // 1. Leer el conteo actual
+    const res = await fetch(
+      `${cfg.sbUrl}/rest/v1/visitas?pagina=eq.home&select=id,count`,
+      { headers: { 'apikey': cfg.sbKey, 'Authorization': 'Bearer ' + cfg.sbKey }}
+    );
+    const data = await res.json();
+    if(!data.length) return;
+
+    const { id, count } = data[0];
+    const newCount = count + 1;
+
+    // 2. Sumar 1
+    await fetch(`${cfg.sbUrl}/rest/v1/visitas?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: {
+        'apikey': cfg.sbKey,
+        'Authorization': 'Bearer ' + cfg.sbKey,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ count: newCount })
+    });
+
+    // 3. Mostrar el número
+    el.textContent = String(newCount).padStart(6,'0').split('').join(' ');
+
+    // 4. Animar barras
+    if(graph){
+      const bars = graph.querySelectorAll('.vg-bar');
+      const heights = [20,35,45,30,55,70,85,100];
+      bars.forEach((bar,i) => bar.style.height = heights[i]+'%');
+    }
+
+  } catch(e){
+    el.textContent = '· · · · · ·';
+    console.warn('Counter error:', e);
+  }
 }
+initVisitorCounter();
 
 /* ── Theme toggle ── */
 let dark=true;
