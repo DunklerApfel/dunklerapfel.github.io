@@ -5685,12 +5685,12 @@ function openModal(id){
   // Sync about modal with saved config
   if(id === 'modal-about'){
     const cfgComment = JSON.parse(localStorage.getItem('lunarConfig')||'{}');
-    if(cfg.bio){ const b=document.getElementById('am-bio'); if(b) b.textContent=cfg.bio; }
-    if(cfg.city){ const c=document.getElementById('am-city'); if(c) c.textContent=cfg.city; }
-    if(cfg.blogName){ const n=document.getElementById('am-name'); if(n) n.textContent=cfg.blogName; }
+    if(cfgComment.bio){ const b=document.getElementById('am-bio'); if(b) b.textContent=cfgComment.bio; }
+    if(cfgComment.city){ const c=document.getElementById('am-city'); if(c) c.textContent=cfgComment.city; }
+    if(cfgComment.blogName){ const n=document.getElementById('am-name'); if(n) n.textContent=cfgComment.blogName; }
     // sync contact links too
-    if(cfg.substack){ const el=document.getElementById('cc-substack'); if(el){ el.href=cfg.substack; el.querySelector('.contact-card-handle').textContent=cfg.substack.replace('https://','').split('/')[0]; }}
-    if(cfg.github){ const el=document.getElementById('cc-github'); if(el){ el.href=cfg.github; el.querySelector('.contact-card-handle').textContent='@'+cfg.github.split('/').pop(); }}
+    if(cfgComment.substack){ const el=document.getElementById('cc-substack'); if(el){ el.href=cfgComment.substack; el.querySelector('.contact-card-handle').textContent=cfgComment.substack.replace('https://','').split('/')[0]; }}
+    if(cfgComment.github){ const el=document.getElementById('cc-github'); if(el){ el.href=cfgComment.github; el.querySelector('.contact-card-handle').textContent='@'+cfgComment.github.split('/').pop(); }}
   }
   const overlay = document.getElementById(id);
   if(overlay) overlay.classList.add('open');
