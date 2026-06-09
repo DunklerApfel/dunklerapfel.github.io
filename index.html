@@ -4548,7 +4548,7 @@ function subscribe(){
   if(!subs.find(s=>s.email===email)){subs.push({email,date:new Date().toISOString()});localStorage.setItem('lunarSubs',JSON.stringify(subs));}
   const cfg=JSON.parse(localStorage.getItem('lunarConfig')||'{}');
   if(cfg.sbUrl&&cfg.sbKey){
-    fetch(`${cfg.sbUrl}/rest/v1/subscribers`,{method:'POST',headers:{'Content-Type':'application/json','apikey':cfg.sbKey,'Authorization':'Bearer '+cfg.sbKey,'Prefer':'return=minimal'},body:JSON.stringify({email})}).catch(()=>{});
+    fetch(`${cfg.sbUrl}/rest/v1/suscriptoras`,{method:'POST',headers:{'Content-Type':'application/json','apikey':cfg.sbKey,'Authorization':'Bearer '+cfg.sbKey,'Prefer':'return=minimal'},body:JSON.stringify({email})}).catch(()=>{});
   }
   if(inp) inp.value='';
   const btn=document.querySelector('.newsletter-btn');
