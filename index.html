@@ -4556,7 +4556,7 @@ function subscribe(){
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ record: { email }, type: 'subscribe' })
-      }).catch(() => {});
+      }).catch(e=>console.warn('Resend error:',e));
     }, 500);
   if(inp) inp.value='';
   const btn=document.querySelector('.newsletter-btn');
