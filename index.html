@@ -4550,13 +4550,21 @@ function subscribe(){
   if(cfg.sbUrl&&cfg.sbKey){
     fetch(`${cfg.sbUrl}/rest/v1/suscriptoras`,{method:'POST',headers:{'Content-Type':'application/json','apikey':cfg.sbKey,'Authorization':'Bearer '+cfg.sbKey,'Prefer':'return=minimal'},body:JSON.stringify({email})}).catch(()=>{});
   }
-  // Enviar email de bienvenida con Resend
+   // Enviar email de bienvenida con Resend directamente
     setTimeout(() => {
-      fetch(`${cfg.sbUrl}/functions/v1/resend-email`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ record: { email }, type: 'subscribe' })
-      }).catch(e=>console.warn('Resend error:',e));
+    fetch('https://api.resend.com/emails', {
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'Authorization':'Bearer re_gq5zcqCZ_H1PYhbma5Hp7CeY62ChnHH3S'
+    },
+    body: JSON.stringify({
+      from:'onboarding@resend.dev',
+      to:email,
+      subject:'🌙 Bienvenida a Bibliotheca Umbrae',
+      html:'<div style="background:#1f1820;color:#e8d4c4;padding:2rem;text-align:center;font-family:Georgia">Bienvenida a Bibliotheca Umbrae</div>'
+      })
+    }).catch(e=>console.warn('Resend error:',e));
     }, 500);
   if(inp) inp.value='';
   const btn=document.querySelector('.newsletter-btn');
