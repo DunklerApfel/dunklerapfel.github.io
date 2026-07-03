@@ -4551,13 +4551,13 @@ function subscribe(){
     fetch(`${cfg.sbUrl}/rest/v1/suscriptoras`,{method:'POST',headers:{'Content-Type':'application/json','apikey':cfg.sbKey,'Authorization':'Bearer '+cfg.sbKey,'Prefer':'return=minimal'},body:JSON.stringify({email})}).catch(()=>{});
   }
   // Enviar email de bienvenida con Resend
-    setTimeout(() => {
-      fetch(`${cfg.sbUrl}/functions/v1/resend-email`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ record: { email }, type: 'subscribe' })
-      }).catch(e=>console.warn('Resend error:',e));
-    }, 500);
+  setTimeout(() => {
+  fetch(`${cfg.sbUrl}/functions/v1/resend-email`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ record: { email }, type: 'subscribe' })
+  }).catch(e=>console.warn('Resend error:',e));
+  }, 500);
   if(inp) inp.value='';
   const btn=document.querySelector('.newsletter-btn');
   if(btn){btn.textContent='✓ ¡Gracias! 🌙';setTimeout(()=>btn.textContent='SUSCRIBIRSE',3000);}
